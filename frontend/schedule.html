@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Train Schedule - Railway Station Management</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header>
+    <nav class="navbar">
+      <a href="index.html" class="logo">🚂 Railway Station</a>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="schedule.html">Train Schedule</a></li>
+        <li><a href="booking.html">Book Ticket</a></li>
+        <li><a href="my-bookings.html">My Bookings</a></li>
+        <li><a href="admin.html">Admin</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <h1 style="color: var(--primary-color); margin-bottom: 2rem;">Train Schedule</h1>
+
+    <!-- Search Filter -->
+    <section class="quick-booking">
+      <h2>Search Trains</h2>
+      <form id="search-form" class="search-form">
+        <div class="form-group">
+          <label for="origin">From</label>
+          <input type="text" id="origin" placeholder="Enter origin station">
+        </div>
+        <div class="form-group">
+          <label for="destination">To</label>
+          <input type="text" id="destination" placeholder="Enter destination station">
+        </div>
+        <div class="form-group">
+          <label for="date">Travel Date</label>
+          <input type="date" id="date">
+        </div>
+        <div class="form-group" style="display: flex; align-items: flex-end; gap: 0.5rem;">
+          <button type="submit" class="btn btn-primary" style="flex: 1;">Search</button>
+          <button type="button" id="reset-search" class="btn btn-secondary">Reset</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- Error/Success Messages -->
+    <div id="error-message" style="display: none;"></div>
+    <div id="success-message" style="display: none;"></div>
+
+    <!-- Trains List -->
+    <section id="trains-container" class="trains-container">
+      <div class="loading">
+        <div class="spinner"></div>
+        <p>Loading trains...</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2024 Railway Station Management System. All rights reserved.</p>
+  </footer>
+
+  <script src="js/config.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/schedule.js"></script>
+  <script>
+    // Load search parameters from home page if available
+    document.addEventListener('DOMContentLoaded', () => {
+      const searchParams = getFromStorage('searchParams');
+      if (searchParams) {
+        if (searchParams.origin) document.getElementById('origin').value = searchParams.origin;
+        if (searchParams.destination) document.getElementById('destination').value = searchParams.destination;
+        if (searchParams.date) document.getElementById('date').value = searchParams.date;
+        
+        // Clear stored parameters
+        removeFromStorage('searchParams');
+        
+        // Trigger search
+        if (searchParams.origin || searchParams.destination) {
+          searchTrains();
+        }
+      }
+
+      // Set minimum date to today
+      const dateInput = document.getElementById('date');
+      if (dateInput) {
+        dateInput.min = new Date().toISOString().split('T')[0];
+      }
+    });
+  </script>
+</body>
+</html>
