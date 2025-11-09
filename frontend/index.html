@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Railway Station Management System - Home</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header>
+    <nav class="navbar">
+      <a href="index.html" class="logo">🚂 Railway Station</a>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="schedule.html">Train Schedule</a></li>
+        <li><a href="booking.html">Book Ticket</a></li>
+        <li><a href="my-bookings.html">My Bookings</a></li>
+        <li><a href="admin.html">Admin</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <!-- Hero Section -->
+    <section class="hero">
+      <h1>Welcome to Railway Station Management</h1>
+      <p>Book your train tickets quickly and easily. Safe, convenient, and reliable.</p>
+      <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 2rem;">
+        <a href="schedule.html" class="btn btn-primary" style="color: white; font-size: 1.1rem;">View Train Schedule</a>
+        <a href="booking.html" class="btn btn-secondary" style="color: var(--dark-text); font-size: 1.1rem;">Book Now</a>
+      </div>
+    </section>
+
+    <!-- Quick Booking Section -->
+    <section class="quick-booking">
+      <h2>Quick Booking</h2>
+      <form id="quick-search-form" class="search-form">
+        <div class="form-group">
+          <label for="quick-origin">From</label>
+          <select id="quick-origin" required>
+            <option value="">Select Origin</option>
+            <option value="Cairo">Cairo</option>
+            <option value="Alexandria">Alexandria</option>
+            <option value="Luxor">Luxor</option>
+            <option value="Aswan">Aswan</option>
+            <option value="Giza">Giza</option>
+            <option value="Port Said">Port Said</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="quick-destination">To</label>
+          <select id="quick-destination" required>
+            <option value="">Select Destination</option>
+            <option value="Cairo">Cairo</option>
+            <option value="Alexandria">Alexandria</option>
+            <option value="Luxor">Luxor</option>
+            <option value="Aswan">Aswan</option>
+            <option value="Giza">Giza</option>
+            <option value="Port Said">Port Said</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="quick-date">Travel Date</label>
+          <input type="date" id="quick-date" required>
+        </div>
+        <div class="form-group" style="display: flex; align-items: flex-end;">
+          <button type="submit" class="btn btn-primary" style="width: 100%;">Search Trains</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+      <div class="feature-card">
+        <div class="feature-icon">🎫</div>
+        <h3>Easy Booking</h3>
+        <p>Book your train tickets in just a few clicks. Simple and hassle-free process.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">⏰</div>
+        <h3>Real-Time Schedule</h3>
+        <p>Access up-to-date train schedules and availability information instantly.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">💳</div>
+        <h3>Secure Payment</h3>
+        <p>Your transactions are safe with our secure payment system.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📱</div>
+        <h3>Mobile Friendly</h3>
+        <p>Book tickets from any device - desktop, tablet, or smartphone.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔔</div>
+        <h3>Instant Confirmation</h3>
+        <p>Get instant booking confirmation via email and SMS.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🎯</div>
+        <h3>Track Bookings</h3>
+        <p>Easily manage and track all your bookings in one place.</p>
+      </div>
+    </section>
+
+    <!-- Featured Routes Section -->
+    <section class="quick-booking">
+      <h2>Featured Routes</h2>
+      <div id="featured-trains" class="trains-container">
+        <div class="loading">
+          <div class="spinner"></div>
+          <p>Loading featured routes...</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Error/Success Messages -->
+    <div id="error-message" style="display: none;"></div>
+    <div id="success-message" style="display: none;"></div>
+  </main>
+
+  <footer>
+    <p>&copy; 2024 Railway Station Management System. All rights reserved.</p>
+    <p>Designed for AWS EC2 Deployment</p>
+  </footer>
+
+  <script src="js/config.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    // Load featured trains
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        const response = await apiFetch('/trains');
+        const trains = response.data.slice(0, 3); // Show top 3
+        
+        const container = document.getElementById('featured-trains');
+        if (trains.length > 0) {
+          container.innerHTML = trains.map(train => `
+            <div class="train-card">
+              <div class="train-header">
+                <div class="train-info">
+                  <h3>${train.trainName}</h3>
+                  <p class="train-number">${train.trainNumber}</p>
+                </div>
+                <div class="train-status on-time">${train.status}</div>
+              </div>
+              <div class="train-route">
+                <div class="route-point">
+                  <div class="station-name">${train.origin}</div>
+                  <div class="time">${train.departureTime}</div>
+                </div>
+                <div class="route-line">
+                  <div class="duration">${train.duration}</div>
+                </div>
+                <div class="route-point">
+                  <div class="station-name">${train.destination}</div>
+                  <div class="time">${train.arrivalTime}</div>
+                </div>
+              </div>
+              <div class="train-details">
+                <div class="detail-item">
+                  <span class="label">Price:</span>
+                  <span class="value price">${formatCurrency(train.price)}</span>
+                </div>
+                <div class="detail-item">
+                  <span class="label">Available Seats:</span>
+                  <span class="value seats">${train.availableSeats}/${train.totalSeats}</span>
+                </div>
+              </div>
+              <div class="train-actions">
+                <a href="booking.html" class="btn btn-primary" onclick="saveToStorage('selectedTrain', ${JSON.stringify(train).replace(/"/g, '&quot;')})">Book Now</a>
+                <a href="schedule.html" class="btn btn-secondary">View All Trains</a>
+              </div>
+            </div>
+          `).join('');
+        } else {
+          container.innerHTML = '<div class="no-results"><p>No trains available</p></div>';
+        }
+      } catch (error) {
+        document.getElementById('featured-trains').innerHTML = 
+          `<div class="no-results"><p>Unable to load trains. Please check backend connection.</p></div>`;
+      }
+
+      // Set minimum date to today
+      const dateInput = document.getElementById('quick-date');
+      if (dateInput) {
+        dateInput.min = new Date().toISOString().split('T')[0];
+        dateInput.value = new Date().toISOString().split('T')[0];
+      }
+
+      // Handle quick search
+      const quickSearchForm = document.getElementById('quick-search-form');
+      if (quickSearchForm) {
+        quickSearchForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const origin = document.getElementById('quick-origin').value;
+          const destination = document.getElementById('quick-destination').value;
+          const date = document.getElementById('quick-date').value;
+          
+          // Save search parameters
+          saveToStorage('searchParams', { origin, destination, date });
+          
+          // Redirect to schedule page
+          window.location.href = 'schedule.html';
+        });
+      }
+    });
+  </script>
+</body>
+</html>
